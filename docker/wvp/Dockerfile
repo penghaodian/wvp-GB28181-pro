@@ -1,4 +1,4 @@
-FROM ringcentral/jdk:11 AS builder
+FROM eclipse-temurin:21-jdk AS builder
 
 EXPOSE 18978/tcp
 EXPOSE 8116/tcp
@@ -56,16 +56,16 @@ COPY . /build
 WORKDIR /build
 RUN ls && mvn clean package -Dmaven.test.skip=true
 WORKDIR /build/target
-#È·±£ÎÄ¼þÃûÒ»ÖÂ
+#È·ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
 RUN mv wvp-pro-*.jar wvp.jar
 
 
-FROM ringcentral/jdk:11
-RUN mkdir -p /opt/wvp
+FROM eclipse-temurin:21-jre
+RUN mkdir -p /opt/wvp /opt/ylcx/wvp
 WORKDIR /opt/wvp
 COPY --from=builder /build/target /opt/wvp
-COPY ./docker/wvp/wvp /opt/wvp
-ENTRYPOINT ["java", "-Xms512m", "-Xmx1024m", "-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=/opt/ylcx/", "-jar", "wvp.jar", "--spring.config.location=/opt/ylcx/wvp/application.yml"]
+COPY ./docker/wvp/wvp /opt/ylcx/wvp
+ENTRYPOINT ["java", "-Xms512m", "-Xmx1024m", "-XX:+HeapDumpOnOutOfMemoryError", "-XX:HeapDumpPath=/opt/ylcx/", "-jar", "wvp.jar", "--spring.config.location=/opt/ylcx/wvp/"]
 
 
 
